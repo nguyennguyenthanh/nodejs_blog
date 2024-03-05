@@ -21,14 +21,14 @@ app.use(
 //https logger
 app.use(morgan('combined'));
 //teamplate engine
-app.engine(
+            app.engine(
   'hbs',
   engine({
     extname: '.hbs',
   }),
 );
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'resources/views'));
+          app.set('view engine', 'hbs');
+                  app.set('views', path.join(__dirname, 'resources/views'));
 
 //Routes init
 route(app);
