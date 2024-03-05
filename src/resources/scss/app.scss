@@ -1,2 +1,2 @@
-                    @import 'variables';
+                                @import 'variables';
 // để node sass đọc đc scss con thì phải conflig cho nodemon đọc được thay đổi của scss nữa => tạo nodemon.json và conflig node-sass --watch src/resources/scss/ --output src/public/css/ (vào trong package.json coi - lắng nge thay đổi của folder)
