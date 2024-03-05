@@ -1,5 +1,4 @@
-
-//tách route và method route của index.js ra để dễ quản lý 
+//tách route và method route của index.js ra để dễ quản lý
 class SiteController {
   // [GET] /
   index(req, res) {
@@ -12,4 +11,4 @@ class SiteController {
   }
 }
 
-module.exports = new SiteController;
+module.exports = new SiteController();

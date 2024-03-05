@@ -1,5 +1,4 @@
-
-//tách route và method route của index.js ra để dễ quản lý 
+//tách route và method route của index.js ra để dễ quản lý
 class NewsController {
   // [GET] (method) / news (path)
   index(req, res) {
@@ -8,8 +7,8 @@ class NewsController {
 
   // [GET] /news/:slug
   show(req, res) {
-    res.send('NEW DETAIL!!!')
+    res.send('NEW DETAIL!!!');
   }
 }
 
-module.exports = new NewsController;
+module.exports = new NewsController();
