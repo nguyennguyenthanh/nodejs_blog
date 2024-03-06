@@ -24,12 +24,11 @@
   },
   "homepage": "https://github.com/nguyennguyenthanh/nodejs_blog#readme",
   "lint-staged": {
-      "src/**/*.{js,json,scss}": "prettier --single-quote --trailing-comma all --tab-width 3 --write"
-    }
-  ,
-  "husky": {
-    "hooks": {
-      "pre-commit" : "lint-staged"
+    "src/**/*.{js,json,scss}": "prettier --single-quote --trailing-comma all --tab-width 4 --write"
+  },
+  "husky":{
+    "hooks":{
+      "pre-commit": "lint-staged"
     }
   },
   "dependencies": {
@@ -45,3 +44,4 @@
     "prettier": "^3.2.5"
   }
 }
+
