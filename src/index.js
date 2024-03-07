@@ -9,6 +9,11 @@ const app = express();
 //tùy chọn port được
 const port = 3000;
 const route = require('./routes');
+
+const db = require('./config/db');
+
+//Connect DB
+db.connect();
 //static file
 app.use(express.static(path.join(__dirname, 'public')));
 //1 dạng middleware của xử lý các method của nodejs như ajax,fetch,jquery...
@@ -21,19 +26,19 @@ app.use(
 //https logger
 app.use(morgan('combined'));
 //teamplate engine
-app.engine(
+            app.engine(
     'hbs',
     engine({
         extname: '.hbs',
     }),
 );
-      app.set('view engine', 'hbs');
-    app.set('views', path.join(__dirname, 'resources/views'));
+app.set(          'view engine', 'hbs');
+app.set('views', path.join(__dirname, 'resources/views'));
 
 //Routes init
-route(      app);
+route(          app);
 
 // Ip: 12.0.0.1 - localhost
-          app.listen(port, () => {
-              console.log(`Example app listening on port ${port}`);
-          });
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+});
