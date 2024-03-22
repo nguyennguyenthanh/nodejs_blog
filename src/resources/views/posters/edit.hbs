@@ -1,0 +1,24 @@
+<div class="mt-4">
+  <h3>Update Poster</h3>
+  {{!-- do html mới hỗ trợ nhận method GET và POST nên để sử dụng method khác như PUT thì phải cài thêm npm install
+  method-override --}}
+  <form class="mt-4" method="POST" action="./{{_id}}?_method=PUT">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" value="{{poster.name}}" class="form-control" id="name" name="name">
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea class="form-control" id="description" name="description">{{poster.description}}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="videoId">VideoId</label>
+      <input type="text" value="{{poster.videoId}}" class="form-control" id="videoId" name="videoId">
+    </div>
+    <div class="form-group">
+      <label for="level">Level</label>
+      <input type="text" value="{{poster.level}}" class="form-control" id="level" name="level">
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+</div>

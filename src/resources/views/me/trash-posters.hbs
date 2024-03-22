@@ -1,0 +1,97 @@
+<div class="mt-4">
+  <div>
+    <a href="/me/stored/posters">List Poster</a>
+    <h3>Deleted Poster</h3>
+  </div>
+
+  <table class="table mt-4">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name Poster</th>
+        <th scope="col">Level</th>
+        <th scope="col" colspan="2">Time Create</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each poster}}
+      <tr>
+        {{!-- tạo hàm sum ở index engine express-handlebars, index là đối số a và 1 là đối số b trong hàm sum --}}
+        <th scope="row">{{sum @index 1}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.level}}</td>
+        <td>{{this.deletedAt}}</td>
+        <td>
+          <a href="" class="btn btn-primary btn-restore" data-id="{{this._id}}">Restore</a>
+          <a href="" class="btn btn-danger" data-toggle="modal" data-target="#delete-poster-modal"
+            data-id="{{this._id}}">Permanently deleted</a>
+        </td>
+      </tr>
+      {{!--nếu {{#each poster}} có dữ liệu thì chạy như trên, nếu k có thì else bên dưới --}}
+      {{else}}
+      <tr>
+        {{!-- colspan theo số lượng thẻ td bên trên --}}
+        <td colspan="4" class="text-center">
+          Trash empty.
+          <a href="/me/stored/posters">List Poster</a>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+{{!-- Confirm delete --}}
+<div id="delete-poster-modal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Post</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure delete it?</p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-delete-post" type="button" class="btn btn-danger">Delete</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<form name="delete-post-form" method="POST"></form>
+<form name="restore-post-form" method="POST"></form>
+
+
+<script>
+  //do trình duyệt chưa đọc kịp đoạn script này nên phải để vào addEventListener để nó lắng nghe đoạn DOM
+  document.addEventListener('DOMContentLoaded', function () {
+    var postId;
+    var deleteForm = document.forms['delete-post-form'];
+    var restoreForm = document.forms['restore-post-form'];
+    var btnDeletePost = document.getElementById('btn-delete-post');
+    //biến khôi phục dữ liệu đã xóa, thay vì dùng vòng lặp để lặp qa các nút restore thì dùng jquery $('') cho tiện
+    var restoreBtn = $('.btn-restore');
+    //khi dialog confirm clicked
+    $('#delete-poster-modal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      postId = button.data('id');
+    });
+
+    btnDeletePost.onclick = function () {
+      deleteForm.action = '/posts/' + postId + '/force?_method=DELETE';
+      deleteForm.submit();      
+    }
+    //Restore btn click
+    restoreBtn.click(function (e) {
+      //do event này ở thẻ a nên theo cơ chế khi click nó sẽ load lại trang -> dùng preventDefault để chặn load
+      e.preventDefault();
+      //jquery sẽ trả ra 1 đối tượng this (jquery elements chính cái nút mình click vào) => trả ra giá trị data mình truy xuất
+      var posterId = $(this).data('id');
+      restoreForm.action = '/posts/' + posterId + '/restore?_method=PATCH';
+      restoreForm.submit();
+    })
+  });
+</script>

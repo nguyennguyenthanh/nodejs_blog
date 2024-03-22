@@ -1,0 +1,144 @@
+<form class="mt-4" name="container-form" method="POST" action="/posts/handle-form-actions">
+  <div>
+    <h3>My Poster</h3>
+    <a href="/me/trash/posters">Trash ({{deletedCount}})</a>
+
+    <div class="mt-4 d-flex align-items-center">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
+        <label class="form-check-label" for="checkbox-all">
+          Select All
+        </label>
+      </div>
+      <select class="form-control form-control-sm checkbox-select-all-options" name="action" required>
+        <option value="">-- Select Action --</option>
+        <option value="delete">Delete</option>
+      </select>
+
+      <button class="btn btn-primary btn-sm btn-check-all-submit" disabled>Excute</button>
+    </div>
+  </div>
+
+  <table class="table mt-4">
+    <thead>
+      <tr>
+        <th scope="col" colspan="2">#</th>
+        <th scope="col">Name Poster</th>
+        <th scope="col">Level</th>
+        <th scope="col" colspan="2">Time Create</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each poster}}
+      <tr>
+        <td>
+          <div class="form-check">
+            {{!-- thêm dấu [] vào name để nó hiểu là chọn 1 hay nhiều checkbox thì nó vẫn hiểu nhiều ID cùng lúc --}}
+            <input class="form-check-input" type="checkbox" value="{{this._id}}" name="posterIds[]">
+          </div>
+        </td>
+        {{!-- tạo hàm sum ở index engine express-handlebars, index là đối số a và 1 là đối số b trong hàm sum --}}
+        <th scope="row">{{sum @index 1}}</th>
+        <td>{{this.name}}</td>
+        <td>{{this.level}}</td>
+        <td>{{this.createdAt}}</td>
+        <td>
+          <a href="/posts/{{this._id}}/edit" class="btn btn-primary">Edit</a>
+          <a href="" class="btn btn-danger" data-toggle="modal" data-target="#delete-poster-modal"
+            data-id="{{this._id}}">Delete</a>
+        </td>
+      </tr>
+      {{!--nếu {{#each poster}} có dữ liệu thì chạy như trên, nếu k có thì else bên dưới --}}
+      {{else}}
+      <tr>
+        {{!-- colspan theo số lượng thẻ td bên trên --}}
+        <td colspan="4" class="text-center">
+          You not yet create poster.
+          <a href="/posts/create">Create Poster here</a>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</form>
+{{!-- Confirm delete --}}
+<div id="delete-poster-modal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Post</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure delete it?</p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-delete-post" type="button" class="btn btn-danger">Delete</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancle</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- Delete hidden form --}}
+<form name="delete-post-form" method="POST"></form>
+
+
+<script>
+  //do trình duyệt chưa đọc kịp đoạn script này nên phải để vào addEventListener để nó lắng nghe đoạn DOM
+  document.addEventListener('DOMContentLoaded', function () {
+    let postId;
+    let deleteForm = document.forms['delete-post-form'];
+    //let containerForm = document.forms['container-form'];
+    let containerForm = $('form[name="container-form"]');
+    let btnDeletePost = document.getElementById('btn-delete-post');
+    let checkboxAll = $('#checkbox-all');
+    //trong '' có nghĩa là thẻ input có thằng name là...
+    let posterItemCheckbox = $('input[name="posterIds[]"]');
+    let checkAllSubmitBtn = $('.btn-check-all-submit');
+
+
+
+    //khi dialog confirm clicked
+    $('#delete-poster-modal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      postId = button.data('id');
+    });
+
+    btnDeletePost.onclick = function () {
+      deleteForm.action = '/posts/' + postId + '?_method=DELETE';
+      deleteForm.submit();
+    }
+
+    //checkbox all clicked
+    checkboxAll.change(function () {
+      let isCheckedAll = $(this).prop('checked');
+      posterItemCheckbox.prop('checked', isCheckedAll);
+      //check vào là phải ktra nên phải gọi hàm này ở đây
+      renderCheckAllSubmitBtn();
+    });
+
+    // khi change(click) bỏ check ở ô nhỏ thì ô check tổng cũng phải bỏ check
+    posterItemCheckbox.change(function () {
+      //sau dấu === là lấy ra số lượng(length) checkbox đang được check
+      let isCheckedSmall = posterItemCheckbox.length === $('input[name="posterIds[]"]:checked').length;
+      //checkboxAll là nút bự bên trên và lấy prop là thằng nút nhỏ, nếu nút nhỏ k check đủ số lượng true thì nút lớn cũng k đc chọn true
+      checkboxAll.prop('checked', isCheckedSmall);
+      //check vào là phải ktra nên phải gọi hàm này ở đây
+      renderCheckAllSubmitBtn();
+    });
+
+
+
+    //Re-render check all submit buttonx
+    function renderCheckAllSubmitBtn() {
+      let checkCount = $('input[name="posterIds[]"]:checked').length;
+      if (checkCount > 0) {
+        checkAllSubmitBtn.attr('disabled', false);
+      } else {
+        checkAllSubmitBtn.attr('disabled', true);
+      }
+    }
+  });
+</script>
